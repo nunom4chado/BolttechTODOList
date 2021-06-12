@@ -1,10 +1,12 @@
 const projectRouter = require("express").Router();
 
 const Project = require("../models/projectModel");
-const User = require("../models/userModel");
 
 projectRouter.get("/", async (req, res) => {
-  const projects = await Project.find({ owner: req.userId });
+  const projects = await Project.find({ owner: req.userId }).populate(
+    "tasks",
+    {}
+  );
   res.json(projects);
 });
 
@@ -12,11 +14,9 @@ projectRouter.post("/", async (req, res, next) => {
   const { title } = req.body;
 
   try {
-    const user = await User.findById(req.userId);
-
     const project = new Project({
       title,
-      owner: user._id,
+      owner: req.userId,
     });
 
     const savedProject = await project.save();

@@ -7,6 +7,7 @@ const verifyAuthToken = require("./middleware/verifyAuthToken");
 
 const authController = require("./controllers/authController");
 const projectsController = require("./controllers/projectsController");
+const tasksController = require("./controllers/tasksController");
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.post("/api/ping", (req, res) => {
 
 app.use("/api/auth", authController);
 app.use("/api/projects", [verifyAuthToken], projectsController);
+app.use("/api/tasks", [verifyAuthToken], tasksController);
 
 // Handles 404 for unknown endpoints.
 app.use((_req, res) => {

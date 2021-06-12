@@ -3,8 +3,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const config = require("./config");
+const verifyAuthToken = require("./middleware/verifyAuthToken");
 
 const authController = require("./controllers/authController");
+const projectsController = require("./controllers/projectsController");
 
 const app = express();
 
@@ -40,6 +42,7 @@ app.post("/api/ping", (req, res) => {
 });
 
 app.use("/api/auth", authController);
+app.use("/api/projects", [verifyAuthToken], projectsController);
 
 // Handles 404 for unknown endpoints.
 app.use((_req, res) => {
@@ -56,10 +59,6 @@ app.use((error, _req, res, next) => {
     return res.status(400).send({ message: "malformatted id" });
   } else if (error.name === "ValidationError") {
     return res.status(400).send({ message: error.message });
-  } else if (error.name === "JsonWebTokenError") {
-    return res.status(401).send({
-      message: "invalid token",
-    });
   }
 
   next(error);

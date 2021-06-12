@@ -8,3 +8,10 @@ test("GET /api/ping", async () => {
     .expect(200)
     .expect("Content-Type", /application\/json/);
 });
+
+test("Unregistered endpoint must return 404 and json error message", async () => {
+  await api
+    .get("/api/this-endpoint-should-not-exist")
+    .expect(404)
+    .expect("Content-Type", /application\/json/);
+});

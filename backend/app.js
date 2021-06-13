@@ -28,6 +28,8 @@ mongoose
     console.error("error connection to MongoDB:", error.message);
   });
 
+app.use(express.static("build"));
+
 // ENDPOINTS
 app.get("/api/ping", (req, res) => {
   res.send({

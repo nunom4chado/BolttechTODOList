@@ -1,0 +1,18 @@
+.c-task.form-check {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.c-task input {
+  cursor: pointer;
+}
+
+.c-task i.btn-link {
+  display: none;
+  margin-left: 0.5rem;
+}
+
+.c-task:hover i.btn-link {
+  display: inline-block;
+  cursor: pointer;
+}

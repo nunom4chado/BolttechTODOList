@@ -105,9 +105,9 @@ tasksRouter.post("/complete", async (req, res, next) => {
     }
 
     taskToUpdate.completedAt = new Date();
-    await taskToUpdate.save();
+    const task = await taskToUpdate.save();
 
-    res.status(204).end();
+    res.send(task);
   } catch (exception) {
     next(exception);
   }

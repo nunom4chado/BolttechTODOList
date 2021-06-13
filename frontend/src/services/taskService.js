@@ -5,7 +5,7 @@ const createTask = (projectId, description) => {
 };
 
 const markCompleted = (taskId) => {
-  return client.put("tasks/complete", { taskId });
+  return client.post("tasks/complete", { taskId });
 };
 
 const deleteTask = (taskId) => {

@@ -1,11 +1,15 @@
 import { useState } from "react";
 import projectService from "../../services/projectService";
 import taskService from "../../services/taskService";
+import Task from "../Task/Task";
 
 function Project({ data, setProjects }) {
   const [newTitle, setNewTitle] = useState(data.title);
   const [editTitle, setEditTitle] = useState(false);
   const [newTask, setNewTask] = useState("");
+
+  const tasksTodo = data.tasks.filter((task) => !task.completedAt);
+  const completedTasks = data.tasks.filter((task) => task.completedAt);
 
   const handleChangeTitle = async () => {
     try {
@@ -52,6 +56,28 @@ function Project({ data, setProjects }) {
       setNewTask("");
     }
   };
+
+  const handleCompleteTask = async (taskId) => {
+    try {
+      const response = await taskService.markCompleted(taskId);
+      setProjects((prev) =>
+        prev.map((project) => {
+          if (project.id === data.id) {
+            project.tasks.map((task) => {
+              if (task.id === taskId) {
+                task.completedAt = response.data.completedAt;
+              }
+              return task;
+            });
+          }
+          return project;
+        })
+      );
+    } catch (error) {
+      console.log("error completing task", error);
+    }
+  };
+
   return (
     <>
       <div className="card">
@@ -89,12 +115,25 @@ function Project({ data, setProjects }) {
           </div>
         </div>
         <div className="card-body">
-          <h6 className="card-title">To Do</h6>
-          {data?.tasks?.length
-            ? data.tasks.map((task) => <p key={task.id}>{task.description}</p>)
+          <h5 className="card-title">To Do</h5>
+          {tasksTodo.length
+            ? tasksTodo.map((task) => (
+                <Task
+                  key={task.id}
+                  task={task}
+                  handleCompleteTask={handleCompleteTask}
+                />
+              ))
             : null}
 
-          <h6 className="card-title">Done</h6>
+          {completedTasks.length ? (
+            <>
+              <h5 className="card-title mt-4">Done</h5>
+              {completedTasks.map((task) => (
+                <Task key={task.id} task={task} />
+              ))}
+            </>
+          ) : null}
 
           <hr />
           <div className="row">

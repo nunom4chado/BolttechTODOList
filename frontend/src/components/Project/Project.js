@@ -1,9 +1,11 @@
 import { useState } from "react";
 import projectService from "../../services/projectService";
+import taskService from "../../services/taskService";
 
 function Project({ data, setProjects }) {
   const [newTitle, setNewTitle] = useState(data.title);
   const [editTitle, setEditTitle] = useState(false);
+  const [newTask, setNewTask] = useState("");
 
   const handleChangeTitle = async () => {
     try {
@@ -34,6 +36,21 @@ function Project({ data, setProjects }) {
   const handleCancel = () => {
     setNewTitle(data.title);
     setEditTitle(false);
+  };
+
+  const handleCreateTask = async () => {
+    if (newTask) {
+      const response = await taskService.createTask(data.id, newTask);
+      setProjects((prev) =>
+        prev.map((project) => {
+          if (project.id === data.id) {
+            project.tasks = [...project.tasks, response.data];
+          }
+          return project;
+        })
+      );
+      setNewTask("");
+    }
   };
   return (
     <>
@@ -80,16 +97,24 @@ function Project({ data, setProjects }) {
           <h6 className="card-title">Done</h6>
 
           <hr />
-          <form className="row">
+          <div className="row">
             <div className="col">
-              <input className="form-control" placeholder="Task" />
+              <input
+                className="form-control"
+                placeholder="Task"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+              />
             </div>
             <div className="col-auto">
-              <button type="submit" className="btn btn-success mb-3">
+              <button
+                className="btn btn-success mb-3"
+                onClick={handleCreateTask}
+              >
                 Add
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </>

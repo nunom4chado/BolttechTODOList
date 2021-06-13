@@ -1,4 +1,5 @@
 import { useState } from "react";
+import authService from "../../services/authService";
 
 import InputWithLabel from "../InputWithLabel/InputWithLabel";
 
@@ -6,15 +7,26 @@ function RegisterForm({ viewLogin }) {
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [registerSuccess, setRegisterSuccess] = useState();
+  const [error, setError] = useState("");
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!(username && name && password)) {
       // show error username and password is required
       return;
     }
-  }
+
+    try {
+      await authService.register({ username, name, password });
+      setRegisterSuccess(true);
+      setError("");
+    } catch (error) {
+      setRegisterSuccess(false);
+      setError(error.response.data.message);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -37,6 +49,18 @@ function RegisterForm({ viewLogin }) {
         isPassword
         handleValueChange={(e) => setPassword(e.target.value)}
       />
+
+      {registerSuccess && (
+        <div className="alert alert-success" role="alert">
+          Registration successfully you can login now.
+        </div>
+      )}
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
 
       <button type="submit" className="btn btn-primary">
         Register

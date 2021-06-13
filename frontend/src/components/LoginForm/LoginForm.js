@@ -1,22 +1,30 @@
 import { useState } from "react";
 import useAuth from "../../auth/useAuth";
+import authService from "../../services/authService";
 import InputWithLabel from "../InputWithLabel/InputWithLabel";
 
 function LoginForm({ viewRegister }) {
   const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!(username && password)) {
-      // show error username and password is required
+      setError("Username and Password are required");
       return;
     }
 
-    login({ username, password });
-  }
+    try {
+      const response = await authService.login({ username, password });
+      setError("");
+      login(response.data);
+    } catch (error) {
+      setError(error.response.data.message);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -33,6 +41,12 @@ function LoginForm({ viewRegister }) {
         isPassword
         handleValueChange={(e) => setPassword(e.target.value)}
       />
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
 
       <button type="submit" className="btn btn-primary">
         Login

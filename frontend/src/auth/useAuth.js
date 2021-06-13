@@ -20,8 +20,8 @@ const useAuth = () => {
   };
 
   const logout = () => {
-    setUser(null);
     authStorage.removeData();
+    setUser(null);
   };
 
   return { user, login, logout };

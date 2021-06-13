@@ -1,12 +1,13 @@
 import { useState } from "react";
 import useAuth from "../../auth/useAuth";
+import InputWithLabel from "../InputWithLabel/InputWithLabel";
 
 function LoginForm({ viewRegister }) {
   const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleFormSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
 
     if (!(username && password)) {
@@ -18,30 +19,26 @@ function LoginForm({ viewRegister }) {
   }
 
   return (
-    <form onSubmit={handleFormSubmit}>
-      <div className="mb-3">
-        <label className="form-label">Username</label>
-        <input
-          className="form-control"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <div className="mb-3">
-        <label className="form-label">Password</label>
-        <input
-          type="password"
-          className="form-control"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
+    <form onSubmit={handleSubmit}>
+      <InputWithLabel
+        containerClasses="mb-3"
+        label="Username"
+        value={username}
+        handleValueChange={(e) => setUsername(e.target.value)}
+      />
+      <InputWithLabel
+        containerClasses="mb-3"
+        label="Password"
+        value={password}
+        isPassword
+        handleValueChange={(e) => setPassword(e.target.value)}
+      />
 
       <button type="submit" className="btn btn-primary">
         Login
       </button>
 
-      <button className="btn btn-link" onClick={viewRegister}>
+      <button className="btn btn-link d-block mx-auto" onClick={viewRegister}>
         Don't have an account?
       </button>
     </form>

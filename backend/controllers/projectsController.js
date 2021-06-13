@@ -1,6 +1,7 @@
 const projectRouter = require("express").Router();
 
 const Project = require("../models/projectModel");
+const Task = require("../models/taskModel");
 
 projectRouter.get("/", async (req, res) => {
   const projects = await Project.find({ owner: req.userId }).populate(
@@ -70,7 +71,10 @@ projectRouter.delete("/:id", async (req, res, next) => {
       return;
     }
 
+    // #TODO  SHOULD REMOVE ALL TASKS ASSOCIATED WITH THIS PROJECT
+
     await Project.findByIdAndRemove(req.params.id);
+    await Task.deleteMany({ project: req.params.id });
     res.status(204).end();
   } catch (exception) {
     next(exception);

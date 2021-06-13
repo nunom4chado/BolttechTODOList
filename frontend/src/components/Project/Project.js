@@ -78,6 +78,24 @@ function Project({ data, setProjects }) {
     }
   };
 
+  const handleDeleteTask = async (taskId) => {
+    try {
+      const response = await taskService.deleteTask(taskId);
+      console.log("delete task response", response);
+      setProjects((prev) =>
+        prev.map((project) => {
+          if (project.id === data.id) {
+            project.tasks = project.tasks.filter((task) => task.id !== taskId);
+          }
+          return project;
+        })
+      );
+      console.log("deleting task", taskId);
+    } catch (error) {
+      console.log("error deleting task", error);
+    }
+  };
+
   return (
     <>
       <div className="card">
@@ -122,6 +140,7 @@ function Project({ data, setProjects }) {
                   key={task.id}
                   task={task}
                   handleCompleteTask={handleCompleteTask}
+                  handleDeleteTask={handleDeleteTask}
                 />
               ))
             : null}

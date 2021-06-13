@@ -5,11 +5,11 @@ const createTask = (projectId, description) => {
 };
 
 const markCompleted = (taskId) => {
-  return client.post("tasks/complete", { taskId });
+  return client.post("/tasks/complete", { taskId });
 };
 
 const deleteTask = (taskId) => {
-  return client.delete("tasks", { taskId });
+  return client.delete("/tasks", { data: { taskId } });
 };
 
 const taskService = {
